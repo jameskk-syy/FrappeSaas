@@ -1,0 +1,13 @@
+{
+  
+   "data":{
+     "email":"ronaldoeden70@gmail.com",
+     "password":"Maina@2546",
+     "phone":"0796598108",
+     "company":"Maina Devs Ltd",
+     "currency":"KSH",
+     "language":"English",
+     "country":"Kenya"
+   }
+
+}
