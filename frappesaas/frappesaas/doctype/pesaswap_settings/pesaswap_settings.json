@@ -1,0 +1,83 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-05-08 07:51:16.520311",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "consumer_key",
+  "merchant_identifier",
+  "api_key",
+  "module_price",
+  "column_break_cucuj",
+  "pay_bill_description",
+  "paybill",
+  "subscription_period"
+ ],
+ "fields": [
+  {
+   "fieldname": "consumer_key",
+   "fieldtype": "Data",
+   "label": "Consumer Key "
+  },
+  {
+   "fieldname": "merchant_identifier",
+   "fieldtype": "Data",
+   "label": "Merchant Identifier"
+  },
+  {
+   "fieldname": "api_key",
+   "fieldtype": "Data",
+   "label": " API key"
+  },
+  {
+   "fieldname": "module_price",
+   "fieldtype": "Currency",
+   "label": " Module Price"
+  },
+  {
+   "fieldname": "column_break_cucuj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pay_bill_description",
+   "fieldtype": "Data",
+   "label": " Pay Bill Description"
+  },
+  {
+   "fieldname": "paybill",
+   "fieldtype": "Int",
+   "label": "Paybill"
+  },
+  {
+   "fieldname": "subscription_period",
+   "fieldtype": "Int",
+   "label": "Subscription Period"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-05-08 07:52:33.555927",
+ "modified_by": "Administrator",
+ "module": "Frappesaas",
+ "name": "Pesaswap Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -253,7 +253,7 @@ def create_transaction(external_id, amount, mobile, billref, customer = None):
 
 @frappe.whitelist(allow_guest=True)
 def get_price_per_module():
-    pesaswap_setting = frappe.get_single("Pesaswap Setting")
+    pesaswap_setting = frappe.get_single("Pesaswap Settings")
     
     if pesaswap_setting:
         return pesaswap_setting.module_price
@@ -264,7 +264,7 @@ def get_price_per_module():
 @frappe.whitelist(allow_guest=True)
 def get_modes_of_payment():
     try:
-        mode_of_payments = frappe.db.get_all("Mode of Payment", filters={}, fields=["mode_of_payment"])
+        mode_of_payments = frappe.db.get_all("Mode of Payment", filters={"name": ["in", ["Mpesa", "Airtel Money"]]}, fields=["mode_of_payment"])
         if mode_of_payments:
             print(f"\n\n\n\n{mode_of_payments}")
             return {
@@ -286,11 +286,10 @@ def get_modes_of_payment():
 
 
 @frappe.whitelist(allow_guest=True)
-def create_customer_and_user(first_name, middle_name, last_name, email_address, mobile_number, territory, gender, password):
+def create_customer_and_user(company_name,email_address, mobile_number, territory, password):
 
         try:
-            customer_name = " ".join(filter(None, [first_name, middle_name, last_name]))
-
+         
             existing_territory = frappe.get_all("Territory", filters={"territory_name": territory})
             if not existing_territory:
                 territory_doc = frappe.get_doc({
@@ -301,11 +300,10 @@ def create_customer_and_user(first_name, middle_name, last_name, email_address, 
 
             customer = frappe.get_doc({
                 "doctype": "Customer",
-                "customer_name": customer_name,
+                "customer_name": company_name,
                 "customer_type": "Individual",
                 "customer_group": "Individual",
                 "territory": territory,
-                "gender": gender,
                 "mobile_no":mobile_number,
                 "default_price_list": "Standard Selling"
             })
@@ -315,14 +313,10 @@ def create_customer_and_user(first_name, middle_name, last_name, email_address, 
             user_name = None
             user = frappe.get_doc({
                 "doctype": "User",
-                "first_name": first_name,
-                "middle_name": middle_name,
-                "last_name": last_name,
+                "first_name": company_name,
                 "email": email_address,
-                "role_profile_name": "Customer",
                 "phone": mobile_number,
                 "mobile_no": mobile_number,
-                "gender": gender,
                 "send_welcome_email": 0
             })
             user.insert(ignore_permissions=True)
@@ -341,11 +335,8 @@ def create_customer_and_user(first_name, middle_name, last_name, email_address, 
 
             contact = frappe.get_doc({
                 "doctype": "Contact",
-                "first_name": first_name,
-                "middle_name": middle_name,
-                "last_name": last_name,
+                "first_name": company_name,
                 "email_id": email_address,
-                "gender": gender,
                 "mobile_no": mobile_number,
                 "is_primary_contact": 1,
                 "is_billing_contact": 1,
