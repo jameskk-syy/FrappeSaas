@@ -1,0 +1,125 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-05-08 12:05:17.048401",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "transaction_external_id",
+  "transaction_id",
+  "phone",
+  "amount",
+  "status",
+  "bill_ref",
+  "column_break_fri6k",
+  "transaction_type_link",
+  "transaction_date",
+  "mpesa_result_desc",
+  "bussiness_name",
+  "amended_from",
+  "processor",
+  "customer"
+ ],
+ "fields": [
+  {
+   "fieldname": "transaction_id",
+   "fieldtype": "Data",
+   "label": "Transaction ID"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Phone"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Amount "
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Status"
+  },
+  {
+   "fieldname": "transaction_type_link",
+   "fieldtype": "Data",
+   "label": "Transaction Type Link"
+  },
+  {
+   "fieldname": "transaction_date",
+   "fieldtype": "Data",
+   "label": "Transaction Date"
+  },
+  {
+   "fieldname": "mpesa_result_desc",
+   "fieldtype": "Data",
+   "label": "Mpesa Result Desc"
+  },
+  {
+   "fieldname": "bussiness_name",
+   "fieldtype": "Data",
+   "label": "Bussiness Name"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "options": "Pesaswap Transaction"
+  },
+  {
+   "fieldname": "column_break_fri6k",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "processor",
+   "fieldtype": "Data",
+   "label": "Processor "
+  },
+  {
+   "fieldname": "bill_ref",
+   "fieldtype": "Data",
+   "label": "Bill Ref"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Customer"
+  },
+  {
+   "fieldname": "transaction_external_id",
+   "fieldtype": "Data",
+   "label": "Transcaction External ID"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-05-09 12:19:02.704454",
+ "modified_by": "Administrator",
+ "module": "Frappesaas",
+ "name": "Pesaswap Transaction",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

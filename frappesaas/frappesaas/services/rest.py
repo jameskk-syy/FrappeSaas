@@ -1,6 +1,7 @@
 import requests
 import uuid
 import frappe
+from datetime import datetime
 from passlib.hash import pbkdf2_sha256
 
 
@@ -98,7 +99,7 @@ def generate_keys(user):
 
 @frappe.whitelist(allow_guest=True)
 def get_pesaswap_setting():
-    pesaswap_setting = frappe.get_single("Pesaswap Setting")
+    pesaswap_setting = frappe.get_single("Pesaswap Settings")
 
     return pesaswap_setting
 
@@ -170,26 +171,28 @@ def send_c2b_collection_payment(customer, amount, mobile,billref, currency):
     except Exception as e:
         frappe.log_error( frappe.get_traceback(), f'{e}')
         return {"error": f"An error occurred: {str(e)}"}
-
+    
+    
 
 @frappe.whitelist(allow_guest=True)
 def create_c2b_billref_collection(customer, mobile, billref, amount):
     try:
+        
         access_token = get_access_token()
-
         if len(mobile) == 10 and mobile.startswith('0'):
             mobile = '254' + mobile[1:]
 
         external_uuid = str(uuid.uuid4())
         external_id = external_uuid.replace("-", "")[:13]
 
-        pesaswap_setting = get_pesaswap_setting()
-        paybill_description = pesaswap_setting.paybill_description
-        paybill = pesaswap_setting.paybill
+        pesaswap_settings =  get_pesaswap_setting()
+        paybill_description = pesaswap_settings.paybill_description
+        paybill = pesaswap_settings.paybill
 
-        bill_number = billref.split('-')[-1]
-        bill_number = str(int(bill_number))
-        billref_formatted = "INV" + bill_number
+        # bill_number = billref.split('-')[-1]
+        # bill_number = str(billref).split('-')[-1]
+        # billref_formatted = "INV" + bill_number
+        
 
         payload = {
             "PaybillDescription": paybill_description,
@@ -197,16 +200,18 @@ def create_c2b_billref_collection(customer, mobile, billref, amount):
             "CommandId": "CustomerPayBillOnline",
             "Msisdn": mobile,
             "ExternalId": external_id,
-            "BillRefNumber": billref_formatted
+            "BillRefNumber": billref
         }
 
         headers = {
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json"
         }
+        print(f"\n\n\n {headers} \n\n\n")
 
         url = "https://devpesaswap-csharp.azurewebsites.net/api/mpesa-c2b-billrefno"
         response = requests.post(url, json=payload, headers=headers)
+        print(f"\n\n\n {response} \n\n\n")
 
 
         if response.status_code == 200:
@@ -215,7 +220,7 @@ def create_c2b_billref_collection(customer, mobile, billref, amount):
 
             flag_comm = FLAGSMS()
 
-            message = f"Dear {customer},\pay your subscription {amount}.\nGo to MPESA Paybill\nBusiness No: {paybill}\nAccount No: {billref_formatted}\nAmount: {amount}"
+            message = f"Dear {customer},\nAn invoice has been made awaiting your payment of {amount}.\nGo to MPESA Paybill\nBusiness No: {paybill}\nAccount No: {billref_formatted}\nAmount: {amount}"
 
             flag_comm.send_sms(mobile, message) 
 
@@ -227,11 +232,13 @@ def create_c2b_billref_collection(customer, mobile, billref, amount):
     except Exception as e:
         frappe.log_error( frappe.get_traceback(), f'{e}')
         return {"error": f"An error occurred: {str(e)}"}
-
-
+    
+    
+    
 @frappe.whitelist(allow_guest=True)
 def create_transaction(external_id, amount, mobile, billref, customer = None):
     try:
+        print(f"\n\n\n {external_id, amount, mobile, billref, customer} \n\n\n")
         pesaswap_transaction = frappe.get_doc({
             "doctype": 'Pesaswap Transaction',
             "transaction_external_id": external_id,
@@ -264,7 +271,7 @@ def get_price_per_module():
 @frappe.whitelist(allow_guest=True)
 def get_modes_of_payment():
     try:
-        mode_of_payments = frappe.db.get_all("Mode of Payment", filters={"name": ["in", ["Mpesa", "Airtel Money"]]}, fields=["mode_of_payment"])
+        mode_of_payments = frappe.db.get_all("Mode of Payment", filters={"name": ["in", ["Mpesa", "Airtel Money","Paybill"]]}, fields=["mode_of_payment"])
         if mode_of_payments:
             print(f"\n\n\n\n{mode_of_payments}")
             return {
@@ -282,6 +289,64 @@ def get_modes_of_payment():
             "status": "error",
             "message": "An error occurred while fetching modes of payment"
         }
+        
+        
+        
+@frappe.whitelist(allow_guest=True)
+def handle_callback(data=None):
+    try:
+        if isinstance(data, str):
+            data = frappe.parse_json(data)
+        
+        existing_transaction = frappe.get_doc('Pesaswap Transaction', data.get('transaction_external_id'))
+        if existing_transaction:
+            existing_transaction.update({
+                "transaction_id": data.get('transaction_id'),
+                "amount": data.get('amount'),
+                "status": data.get('status'),
+                "transaction_date": datetime.date.today().strftime('%Y-%m-%d'),
+                "mpesa_result_desc": data.get('mpesa_result_desc'),
+                "processor": data.get('processor'),
+                "method": data.get('method'),
+                "command_id": data.get('command_id'),
+                "business_name": data.get('business_name'),
+                "result_desc": data.get('result_desc')
+            })
+
+            existing_transaction.save(ignore_permissions=True)
+
+            if data.get('status') == "Completed" and existing_transaction.customer:
+                make_payment_to_bill(existing_transaction.customer, existing_transaction.bill_ref, data.get('amount'), data.get('transaction_id'), existing_transaction.transaction_type)
+                
+
+            return {"status": "success", "message": "Transaction data updated successfully."}
+        else:
+            frappe.log_error(frappe.get_traceback(), "Transaction with ID {} does not exist.".format(data.get('transaction_external_id')))
+            raise Exception("Transaction with ID {} does not exist.".format(data.get('transaction_external_id')))
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), f'{e}')
+        return {"status": "Error handling callback:", "message": str(e)}
+    
+    
+@frappe.whitelist(allow_guest=True)
+def callback_handler():
+    try:
+        data = frappe.request.args.get("data")
+
+        base_url = frappe.utils.get_url()
+
+        response = requests.post(f"{base_url}/api/method/pesaswap.services.rest.handle_callback", params={"data": data})
+        
+        if response.status_code == 200:
+            return response.json()
+        else:
+            frappe.log_error( frappe.get_traceback(), f'Request failed with status code {response.status_code}')
+            return {"status": "error", "message": f"Request failed with status code {response.status_code}"}
+
+    except Exception as e:
+        frappe.log_error( frappe.get_traceback(), f'{e}')
+        return {"status": "error", "message": str(e)}
 
 
 

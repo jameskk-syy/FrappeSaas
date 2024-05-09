@@ -7,14 +7,17 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "details",
+  "section_break_hncbn",
   "consumer_key",
   "merchant_identifier",
   "api_key",
   "module_price",
   "column_break_cucuj",
-  "pay_bill_description",
-  "paybill",
-  "subscription_period"
+  "subscription_period",
+  "section_break_b7zkl",
+  "paybill_description",
+  "paybill"
  ],
  "fields": [
   {
@@ -42,11 +45,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "pay_bill_description",
-   "fieldtype": "Data",
-   "label": " Pay Bill Description"
-  },
-  {
    "fieldname": "paybill",
    "fieldtype": "Int",
    "label": "Paybill"
@@ -55,12 +53,30 @@
    "fieldname": "subscription_period",
    "fieldtype": "Int",
    "label": "Subscription Period"
+  },
+  {
+   "fieldname": "section_break_b7zkl",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "details",
+   "fieldtype": "HTML",
+   "options": "<h4> Get these details from your Pesaswap Merchant Portal</h4>"
+  },
+  {
+   "fieldname": "section_break_hncbn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "paybill_description",
+   "fieldtype": "Data",
+   "label": " Pay Bill Description"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-05-08 07:52:33.555927",
+ "modified": "2024-05-08 13:44:31.269492",
  "modified_by": "Administrator",
  "module": "Frappesaas",
  "name": "Pesaswap Settings",

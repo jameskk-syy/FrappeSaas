@@ -213,3 +213,10 @@ app_license = "MIT"
 # auth_hooks = [
 # 	"frappesaas.auth.validate"
 # ]
+fixtures = [
+"Client Script",
+"Custom Field",
+  "Print Format",
+  "Property Setter",
+  "Pesaswap Settings"
+]

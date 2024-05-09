@@ -1,0 +1,15 @@
+[
+ {
+  "api_key": "cqcGFGRcf7Gg5mZlH3jWdkN4u",
+  "consumer_key": "nUlzZLgLe0",
+  "docstatus": 0,
+  "doctype": "Pesaswap Settings",
+  "merchant_identifier": "G1BtBgjC4iMixsbIMf6lnyA22",
+  "modified": "2024-05-08 13:47:14.358211",
+  "module_price": 50.0,
+  "name": "Pesaswap Settings",
+  "paybill": 174379,
+  "paybill_description": "FE1C94C0-B50F-11EE-9C07-1B97A2AE15F1",
+  "subscription_period": 12
+ }
+]
